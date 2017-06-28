@@ -21,6 +21,6 @@ merge, reproject, resample, etc, which often requires time consuming file manage
 This pulls elevation data from the web, much like an app on your phone does.  Don't spend all your time dealing with
 NED tiles!
 
-Get your [Mapzen web api key] (https://mapzen.com/documentation/overview/api-keys/) from their site for free.
+Get your [Mapzen web api key](https://mapzen.com/documentation/overview/api-keys/) from their site for free.
 
 Big ups to [rasterio](https://github.com/mapbox/rasterio).
