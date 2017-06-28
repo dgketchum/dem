@@ -17,4 +17,7 @@ into the same local coordinate system for accurate scientific analysis.
 This is intended to replace the task of downloading NED files and going through a long process in a GIS to 
 reproject, resample, etc, which often requires time consuming file management and use of proprietary software.
 
+This pulls elevation data from the web, much like an app on your phone does.  Don't spend all your time dealing with
+NED tiles!
 
+Get your Mapzen web api key from their site for free.
