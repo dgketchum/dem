@@ -1,4 +1,6 @@
 # dem
+See test_dem.py for examples of how this is used.
+
 Collect elevation data from AWS or Thredds, merge, reproject, resample.
 
 No API key needed!
