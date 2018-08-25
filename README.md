@@ -5,7 +5,7 @@ Collect elevation data from AWS or Thredds, merge, reproject, resample.
 
 No API key needed!
 
-`pip install git+git://github.com/dgketchum/dem.git`
+`pip install opendem`
 
 `$ python`
 
