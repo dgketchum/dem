@@ -23,23 +23,23 @@ os.environ['TRAVIS_CI'] = 'True'
 try:
     from setuptools import setup
 
-    setup_kwargs = {'entry_points': {'console_scripts': ['landsat=landsat.landsat_cli:cli_runner']}}
+    setup_kwargs = {}
 except ImportError:
     from distutils.core import setup
 
-    setup_kwargs = {'scripts': ['bin/landsat/landsat_cli']}
+    setup_kwargs = {}
 
 with open('README.txt') as f:
     readme = f.read()
 
-tag = '0.4.95'
+tag = '0.0.1'
 
-setup(name='Landsat578',
+setup(name='opendem',
       version=tag,
-      description='Very simple API to download Landsat data from Landsat 1 - 5, 7, and 8 from Google',
+      description='Very simple API to download, merge, resample, project DEM tiles from AWS and Thredds',
       long_description=readme,
       setup_requires=['nose>=1.0'],
-      py_modules=['landsat'],
+      py_modules=[],
       license='Apache',
       classifiers=[
           'Development Status :: 3 - Alpha',
@@ -48,15 +48,15 @@ setup(name='Landsat578',
           'License :: OSI Approved :: Apache Software License',
           'Programming Language :: Python :: 2.7',
           'Programming Language :: Python :: 3.6'],
-      keywords='landsat download hydrology remote sensing',
+      keywords='DEM digital elevation model',
       author='David Ketchum',
       author_email='dgketchum@gmail.com',
       platforms='Posix; MacOS X; Windows',
       packages=['landsat'],
-      download_url='https://github.com/{}/{}/archive/{}.tar.gz'.format('dgketchum', 'Landsat578', tag),
+      download_url='https://github.com/{}/{}/archive/{}.tar.gz'.format('dgketchum', 'dem', tag),
       url='https://github.com/dgketchum',
-      test_suite='tests.test_suite.suite',
-      install_requires=['pyyaml', 'pandas', 'requests', 'lxml', 'future'],
+      test_suite='tests.test_dem',
+      install_requires=['numpy', 'requests', 'scipy', 'future', 'rasterio', 'xarray'],
       **setup_kwargs)
 
 

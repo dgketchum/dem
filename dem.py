@@ -36,21 +36,27 @@ from tempfile import mkdtemp
 from xarray import open_dataset
 
 
+class BadRequestError(Exception):
+    pass
+
+
 class Dem(object):
     def __init__(self):
         pass
 
     @staticmethod
-    def save(array, geometry, output_filename, crs=None):
+    def save(array, geometry, output_filename, crs=None, return_array=False):
         try:
             array = array.reshape(1, array.shape[1], array.shape[2])
         except IndexError:
             array = array.reshape(1, array.shape[0], array.shape[1])
-        geometry['dtype'] = array.dtype
+        geometry['dtype'] = str(array.dtype)
         if crs:
             geometry['crs'] = CRS({'init': crs})
         with rasopen(output_filename, 'w', **geometry) as dst:
             dst.write(array)
+        if return_array:
+            return array
         return None
 
 
@@ -87,7 +93,7 @@ class ThreddsDem(Dem):
         return subset
 
 
-class MapzenDem(Dem):
+class AwsDem(Dem):
     def __init__(self, zoom=None, target_profile=None, bounds=None, clip_object=None,
                  api_key=None):
         Dem.__init__(self)
@@ -97,8 +103,8 @@ class MapzenDem(Dem):
         self.bbox = bounds
         self.clip_feature = clip_object
         self.key = api_key
-        self.url = 'https://tile.nextzen.org'
-        self.base_gtiff = '/tilezen/terrain/v1/geotiff/{z}/{x}/{y}.tif?api_key={k}'
+        self.url = 'https://s3.amazonaws.com/elevation-tiles-prod'
+        self.base_gtiff = '/geotiff/{z}/{x}/{y}.tif'
         self.temp_dir = mkdtemp(prefix='collected-')
         self.files = []
 
@@ -204,9 +210,12 @@ class MapzenDem(Dem):
 
         base_url = '{}{}'.format(self.url, self.base_gtiff)
 
+        # https://tile.nextzen.org/tilezen/terrain/v1/geotiff/{z}/{x}/{y}.tif?api_key=your-nextzen-api-key
         for (z, x, y) in self.find_tiles():
             url = base_url.format(z=z, x=x, y=y, k=self.key)
             req = get(url, verify=False, stream=True)
+            if req.status_code != 200:
+                raise BadRequestError
 
             temp_path = os.path.join(self.temp_dir, '{}-{}-{}.tif'.format(z, x, y))
             with open(temp_path, 'wb') as f:
@@ -287,18 +296,19 @@ class MapzenDem(Dem):
             array = src.read(1)
             profile = src.profile
             res = src.res
-            target_res = self.target_profile['transform'].a
+            target_affine = self.target_profile['affine']
+            target_res = target_affine.a
             res_coeff = res[0] / target_res
 
             new_array = empty(shape=(1, round(array.shape[0] * res_coeff - 2),
                                      round(array.shape[1] * res_coeff)), dtype=float32)
-            aff = src.transform
+            aff = src.affine
             new_affine = Affine(aff.a / res_coeff, aff.b, aff.c, aff.d, aff.e / res_coeff, aff.f)
 
             profile['transform'] = self.target_profile['transform']
             profile['width'] = self.target_profile['width']
             profile['height'] = self.target_profile['height']
-            profile['dtype'] = str(new_array.dtype)
+            profile['dtype'] = str(array.dtype)
 
             delattr(self, 'mask')
 
@@ -310,8 +320,6 @@ class MapzenDem(Dem):
                 dst.write(new_array)
 
             return new_array
-
-            # add no-data values TODO
 
 
 if __name__ == '__main__':

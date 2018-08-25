@@ -1,9 +1,11 @@
 # dem
-Collect elevation data from MapZen or Thredds, merge, reproject, resample.
+Collect elevation data from AWS or Thredds, merge, reproject, resample.
+
+No API key needed!
 
 Return elevation, aspect, or slope, that has been correctly transformed to fit rasters you are already working on.
 
-Pulls a web map tile service (MapZen) list of tiles, based on input zoom level and bounding box, merges it,
+Pulls a web map tile service (AWS) list of tiles, based on input zoom level and bounding box, merges it,
 reprojects it, and resamples it to a raster you are working with.
 
 This is intended for work where one needs a dem (elevation), slope, or aspect in a grid that matches another
@@ -20,7 +22,5 @@ merge, reproject, resample, etc, which often requires time consuming file manage
 
 This pulls elevation data from the web, much like an app on your phone does.  Don't spend all your time dealing with
 NED tiles!
-
-Get your [Mapzen web api key](https://mapzen.com/documentation/overview/api-keys/) from their site for free.
 
 Big ups to [rasterio](https://github.com/mapbox/rasterio).

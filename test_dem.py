@@ -17,7 +17,7 @@
 import unittest
 
 from bounds import RasterBounds
-from dem import MapzenDem
+from dem import AwsDem
 from sat_image.image import Landsat8
 
 
@@ -34,9 +34,9 @@ class MapzenDemTestCase(unittest.TestCase):
         bb = RasterBounds(affine_transform=profile['affine'],
                           profile=profile, latlon=True)
 
-        dem = MapzenDem(zoom=10, bounds=bb, target_profile=profile,
-                        clip_object=polygon,
-                        api_key=self.api_key)
+        dem = AwsDem(zoom=10, bounds=bb, target_profile=profile,
+                     clip_object=polygon,
+                     api_key=self.api_key)
 
         elev = dem.terrain(attribute='elevation',
                            out_file='/home/dgketchum/IrrigationGIS/tests/mapzen_'
