@@ -5,6 +5,12 @@ Collect elevation data from AWS or Thredds, merge, reproject, resample.
 
 No API key needed!
 
+`pip install git+git://github.com/dgketchum/dem.git`
+
+`$ python`
+
+`>>> import dem`
+
 Return elevation, aspect, or slope, that has been correctly transformed to fit rasters you are already working on.
 
 ![Montana Slope](https://github.com/dgketchum/dem/blob/master/Montana_Slope.png)
