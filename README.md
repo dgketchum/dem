@@ -7,6 +7,8 @@ No API key needed!
 
 Return elevation, aspect, or slope, that has been correctly transformed to fit rasters you are already working on.
 
+![alt text](http://url/to/img.png)
+
 Pulls a web map tile service (AWS) list of tiles, based on input zoom level and bounding box, merges it,
 reprojects it, and resamples it to a raster you are working with.
 
