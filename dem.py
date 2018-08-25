@@ -41,28 +41,23 @@ class Dem(object):
         pass
 
     @staticmethod
-    def save(array, geometry, output_filename, crs=None, return_array=False):
+    def save(array, geometry, output_filename, crs=None):
         try:
             array = array.reshape(1, array.shape[1], array.shape[2])
         except IndexError:
             array = array.reshape(1, array.shape[0], array.shape[1])
-        geometry['dtype'] = str(array.dtype)
+        geometry['dtype'] = array.dtype
         if crs:
             geometry['crs'] = CRS({'init': crs})
         with rasopen(output_filename, 'w', **geometry) as dst:
             dst.write(array)
-        if return_array:
-            with rasopen(output_filename, 'r') as src:
-                arr = src.read()
-            return arr
-        else:
-            return None
+        return None
 
 
 class ThreddsDem(Dem):
     """ Digital Elevation Model and Dertivatives from Gridmet
     
-    4 km resolution.
+    4 km resolution
     
     This is usefull because it matches the resolution and grid geometry
     of the Gridmet meteorological datasets.
@@ -93,19 +88,13 @@ class ThreddsDem(Dem):
 
 
 class MapzenDem(Dem):
-    def __init__(self, target_profile, bounds, zoom=None, clip_object=None,
+    def __init__(self, zoom=None, target_profile=None, bounds=None, clip_object=None,
                  api_key=None):
         Dem.__init__(self)
 
         self.zoom = zoom
         self.target_profile = target_profile
-
-        for bound in [bounds.east, bounds.north, bounds.south, bounds.west]:
-            if bound > 180.0 or bound < -180.:
-                raise ValueError('MapzenDem class takes a latlon bounds object!')
-            else:
-                self.bbox = bounds
-
+        self.bbox = bounds
         self.clip_feature = clip_object
         self.key = api_key
         self.url = 'https://tile.nextzen.org'
@@ -218,8 +207,6 @@ class MapzenDem(Dem):
         for (z, x, y) in self.find_tiles():
             url = base_url.format(z=z, x=x, y=y, k=self.key)
             req = get(url, verify=False, stream=True)
-            if req.status_code != 200:
-                raise ValueError('Bad response from Mapzen API request.')
 
             temp_path = os.path.join(self.temp_dir, '{}-{}-{}.tif'.format(z, x, y))
             with open(temp_path, 'wb') as f:
@@ -325,5 +312,9 @@ class MapzenDem(Dem):
             return new_array
 
             # add no-data values TODO
+
+
+if __name__ == '__main__':
+    home = os.path.expanduser('~')
 
 # ========================= EOF ====================================================================
