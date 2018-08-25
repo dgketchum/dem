@@ -32,7 +32,7 @@ except ImportError:
 with open('README.md') as f:
     readme = f.read()
 
-tag = '0.0.1'
+tag = '0.0.2'
 
 setup(name='opendem',
       version=tag,
@@ -52,7 +52,7 @@ setup(name='opendem',
       author='David Ketchum',
       author_email='dgketchum@gmail.com',
       platforms='Posix; MacOS X; Windows',
-      packages=[],
+      packages=['dem'],
       download_url='https://github.com/{}/{}/archive/{}.tar.gz'.format('dgketchum', 'dem', tag),
       url='https://github.com/dgketchum',
       test_suite='tests.test_dem',
