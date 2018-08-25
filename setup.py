@@ -29,7 +29,7 @@ except ImportError:
 
     setup_kwargs = {}
 
-with open('README.txt') as f:
+with open('README.md') as f:
     readme = f.read()
 
 tag = '0.0.1'
@@ -52,7 +52,7 @@ setup(name='opendem',
       author='David Ketchum',
       author_email='dgketchum@gmail.com',
       platforms='Posix; MacOS X; Windows',
-      packages=['landsat'],
+      packages=[],
       download_url='https://github.com/{}/{}/archive/{}.tar.gz'.format('dgketchum', 'dem', tag),
       url='https://github.com/dgketchum',
       test_suite='tests.test_dem',
