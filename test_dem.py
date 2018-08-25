@@ -37,7 +37,7 @@ class AwsDemTestCase(unittest.TestCase):
 
         dem = AwsDem(zoom=10, target_profile=profile, bounds=bb, clip_object=polygon)
 
-        elev = dem.terrain(attribute='elevation',
+        elev = dem.terrain(attribute='slope',
                            out_file='/home/dgketchum/IrrigationGIS/tests/mapzen_'
                                     '{}_{}.tif'.format(l8.target_wrs_path,
                                                        l8.target_wrs_row))
