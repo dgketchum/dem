@@ -56,7 +56,7 @@ setup(name='opendem',
       download_url='https://github.com/{}/{}/archive/{}.tar.gz'.format('dgketchum', 'dem', tag),
       url='https://github.com/dgketchum',
       test_suite='tests.test_dem',
-      install_requires=['numpy', 'requests', 'scipy', 'future', 'rasterio', 'xarray'],
+      install_requires=['numpy', 'requests', 'scipy', 'future', 'rasterio', 'xarray', 'pyproj'],
       **setup_kwargs)
 
 

@@ -94,26 +94,27 @@ class ThreddsDem(Dem):
 
 
 class AwsDem(Dem):
-    def __init__(self, zoom=None, target_profile=None, bounds=None, clip_object=None,
-                 api_key=None):
+    def __init__(self, zoom=None, target_profile=None, bounds=None, clip_object=None):
         Dem.__init__(self)
 
         self.zoom = zoom
         self.target_profile = target_profile
         self.bbox = bounds
         self.clip_feature = clip_object
-        self.key = api_key
         self.url = 'https://s3.amazonaws.com/elevation-tiles-prod'
         self.base_gtiff = '/geotiff/{z}/{x}/{y}.tif'
         self.temp_dir = mkdtemp(prefix='collected-')
         self.files = []
+        self.mask = []
 
     def terrain(self, out_file=None, attribute='elevation',
                 mode=None, save_and_return=False):
         self.get_tiles()
         self.merge_tiles()
         self.reproject_tiles()
-        self.mask_dem()
+        if self.clip_feature:
+            self.mask_dem()
+
         dem = self.resample()
 
         if attribute == 'elevation':
@@ -129,7 +130,7 @@ class AwsDem(Dem):
             slope = self.get_slope(dem, mode=mode)
             if out_file:
                 if len(slope.shape) > 2:
-                    slope = reshape(1, dem.shape[0], dem.shape[1])
+                    slope = slope.reshape(1, dem.shape[1], dem.shape[2])
                 arr = self.save(slope, self.target_profile, out_file,
                                 return_array=True)
                 if save_and_return:
@@ -142,7 +143,7 @@ class AwsDem(Dem):
             aspect = where(aspect > 2 * pi, 0, aspect)
             if out_file:
                 if len(aspect.shape) > 2:
-                    aspect = reshape(1, dem.shape[0], dem.shape[1])
+                    aspect = aspect.reshape(1, dem.shape[0], dem.shape[1])
                 arr = self.save(aspect, self.target_profile, out_file,
                                 return_array=True)
                 if save_and_return:
@@ -212,7 +213,7 @@ class AwsDem(Dem):
 
         # https://tile.nextzen.org/tilezen/terrain/v1/geotiff/{z}/{x}/{y}.tif?api_key=your-nextzen-api-key
         for (z, x, y) in self.find_tiles():
-            url = base_url.format(z=z, x=x, y=y, k=self.key)
+            url = base_url.format(z=z, x=x, y=y)
             req = get(url, verify=False, stream=True)
             if req.status_code != 200:
                 raise BadRequestError
@@ -292,7 +293,12 @@ class AwsDem(Dem):
 
         temp_path = os.path.join(self.temp_dir, 'resample.tif')
 
-        with rasopen(self.mask, 'r') as src:
+        if self.mask:
+            ras = self.mask
+        else:
+            ras = self.reprojection
+
+        with rasopen(ras, 'r') as src:
             array = src.read(1)
             profile = src.profile
             res = src.res
@@ -309,8 +315,6 @@ class AwsDem(Dem):
             profile['width'] = self.target_profile['width']
             profile['height'] = self.target_profile['height']
             profile['dtype'] = str(array.dtype)
-
-            delattr(self, 'mask')
 
             with rasopen(temp_path, 'w', **profile) as dst:
                 reproject(array, new_array, src_transform=aff,
