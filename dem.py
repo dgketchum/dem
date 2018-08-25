@@ -302,7 +302,10 @@ class AwsDem(Dem):
             array = src.read(1)
             profile = src.profile
             res = src.res
-            target_affine = self.target_profile['affine']
+            try:
+                target_affine = self.target_profile['affine']
+            except KeyError:
+                target_affine = self.target_profile['transform']
             target_res = target_affine.a
             res_coeff = res[0] / target_res
 
