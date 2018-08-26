@@ -32,7 +32,7 @@ except ImportError:
 with open('README.md') as f:
     readme = f.read()
 
-tag = '0.0.21'
+tag = '0.0.22'
 
 setup(name='opendem',
       version=tag,
