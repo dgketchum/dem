@@ -35,6 +35,9 @@ from scipy.ndimage import gaussian_gradient_magnitude
 from tempfile import mkdtemp
 from xarray import open_dataset
 
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+from requests.packages.urllib3 import disable_warnings
+disable_warnings(InsecureRequestWarning)
 
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from requests.packages.urllib3 import disable_warnings
