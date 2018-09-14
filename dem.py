@@ -36,6 +36,11 @@ from tempfile import mkdtemp
 from xarray import open_dataset
 
 
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+from requests.packages.urllib3 import disable_warnings
+disable_warnings(InsecureRequestWarning)
+
+
 class BadRequestError(Exception):
     pass
 
@@ -311,7 +316,7 @@ class AwsDem(Dem):
 
             new_array = empty(shape=(1, round(array.shape[0] * res_coeff - 2),
                                      round(array.shape[1] * res_coeff)), dtype=float32)
-            aff = src.affine
+            aff = src.transform
             new_affine = Affine(aff.a / res_coeff, aff.b, aff.c, aff.d, aff.e / res_coeff, aff.f)
 
             profile['transform'] = self.target_profile['transform']
