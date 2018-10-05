@@ -32,11 +32,12 @@ except ImportError:
 with open('README.md') as f:
     readme = f.read()
 
-tag = '0.0.22'
+tag = '0.0.23'
 
 setup(name='opendem',
       version=tag,
-      description='Very simple API to download, merge, resample, project DEM tiles from AWS and Thredds',
+      description='Very simple API to download, merge, resample, '
+                  'project DEM tiles from AWS and Thredds',
       long_description=readme,
       setup_requires=['nose>=1.0'],
       py_modules=['dem'],

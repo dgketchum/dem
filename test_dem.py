@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ===============================================================================
-
+import os
 import unittest
 
 from rasterio import open as rasopen
@@ -25,8 +25,11 @@ from sat_image.image import Landsat8
 
 class AwsDemTestCase(unittest.TestCase):
     def setUp(self):
-        self.dir_name_LC8 = '/home/dgketchum/IrrigationGIS/tests/gridmet/LC80380272014227LGN01'
-        self.raster = '/home/dgketchum/IrrigationGIS/tests/LE07_clip_L1TP_039027_20130726_20160907_01_T1_B3.TIF'
+        home = os.path.expanduser('~')
+        irr = os.path.join('IrrigationGIS')
+        tst = os.path.join('tests', 'gridmet')
+        self.dir_name_LC8 = os.path.join(tst, 'LC80380272014227LGN01')
+        self.raster = os.path.join(self.dir_name_LC8, 'LE07_clip_L1TP_039027_20130726_20160907_01_T1_B3.TIF')
 
     def test_dem(self):
         l8 = Landsat8(self.dir_name_LC8)
